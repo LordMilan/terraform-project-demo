@@ -7,7 +7,7 @@ resource "aws_apigatewayv2_api" "python_api" {
 resource "aws_apigatewayv2_stage" "python_api_stage" {
   count       = length(var.python_function_names)
   api_id      = aws_apigatewayv2_api.python_api[count.index].id
-  name        = "default"
+  name        = var.base_name
   auto_deploy = true
 }
 

@@ -4,3 +4,5 @@
 terraform.tf*
 
 global.tfvars
+
+python_lambda_function_payload.zip

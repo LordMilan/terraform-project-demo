@@ -51,19 +51,26 @@ def decimal_default(obj):
     raise TypeError
 
 def lambda_handler(event, context):
+    print(event)
     dynamodb = boto3.resource('dynamodb')
-    
-    service_type = event.get('service_type')
-    table_name = event.get('table_name')
-    record = event.get('record')
-    
-    if service_type == 'create_table' and table_name:
-        result = create_table(dynamodb, table_name)
-    elif service_type == 'insert_record' and table_name and record:
-        result = insert_record(dynamodb, table_name, record)
-    elif service_type == 'get_records' and table_name:
-        result = get_records(dynamodb, table_name)
-    else:
+
+    try:
+        query_params = event.get('queryStringParameters', {})
+        service_type = query_params.get('service_type')
+        table_name = query_params.get('table_name')
+        record = json.loads(query_params.get('record', '{}'))
+
+        if service_type == 'create_table' and table_name:
+            result = create_table(dynamodb, table_name)
+        elif service_type == 'insert_record' and table_name and record:
+            result = insert_record(dynamodb, table_name, record)
+        elif service_type == 'get_records' and table_name:
+            result = get_records(dynamodb, table_name)
+        else:
+            result = "Invalid service_type, table_name, or record."
+
+    except Exception as e:
+        print(str(e))
         result = "Invalid service_type, table_name, or record."
 
     return {

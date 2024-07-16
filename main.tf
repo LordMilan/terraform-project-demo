@@ -21,4 +21,10 @@ module "lambda_functions" {
   base_name             = var.base_name
 }
 
-
+module "api_gateway" {
+  source                                 = "./API_Gateway"
+  python_lambda_function_invoke_arns = module.lambda_functions.api_python_lambda_function_invoke_arns
+  python_function_names = var.python_function_names
+  base_name                              = var.base_name
+  depends_on = [ module.lambda_functions ]
+}
